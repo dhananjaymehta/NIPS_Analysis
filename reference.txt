@@ -1,0 +1,34 @@
+#Fast-Text feature engineering :
+https://www.kdnuggets.com/2018/05/implementing-deep-learning-methods-feature-engineering-text-data-fasttext.html
+
+
+# Fasttext documentation
+https://github.com/facebookresearch/fastText
+https://fasttext.cc/docs/en/unsupervised-tutorial.html
+
+# Kernel
+https://www.kaggle.com/benhamner/nips-2015-papers/kernels
+
+
+# Ran into following erro -
+which openssl
+
+`
+conda install anaconda-clean
+Solving environment: failed
+
+CondaHTTPError: HTTP 000 CONNECTION FAILED for url <https://repo.anaconda.com/pkgs/free/noarch/repodata.json.bz2>
+Elapsed: -
+
+An HTTP error occurred when trying to retrieve this URL.
+HTTP errors are often intermittent, and a simple retry will get you on your way.
+
+If your current network has https://www.anaconda.com blocked, please file
+a support request with your network engineering team.
+
+SSLError(MaxRetryError('HTTPSConnectionPool(host=\'repo.anaconda.com\', port=443): Max retries exceeded with url: /pkgs/free/noarch/repodata.json.bz2 (Caused by SSLError("Can\'t connect to HTTPS URL because the SSL module is not available.",))',),)
+
+`
+
+# clustering
+http://brandonrose.org/clustering

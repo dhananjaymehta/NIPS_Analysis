@@ -1,0 +1,16 @@
+cython==0.25.2
+#fasttext
+Python>=3.4
+NumPy
+SciPy
+pybind11
+nltk
+pycontractions ..pip install pycontractions
+gensim
+nltk
+pandas
+bs4
+spacy
+gensim
+sklearn
+matplotlib
