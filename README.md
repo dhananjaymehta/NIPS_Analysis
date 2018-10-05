@@ -25,12 +25,6 @@ In addition to keywords, a corpus will generally have clusters of topics. Group 
 Logical organization and comments help to make code more understandable and maintainable. Keep this in mind as you write your code! Feel free to use any packages that you would like. Please check all your code into a publicly accessible Github repo and send me an email with link to your work.
 
 
-### NOTE: Major Consideration
-- Design Decisions
-- Code pattern
-- Documentation
-- Testing - Using Visualization
-
 ## Details of Implementation
 
 <img src="./images/pipeline.jpg" width="800">
