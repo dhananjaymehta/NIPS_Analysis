@@ -1,59 +1,76 @@
-import pandas as pd
-from text_preprocessing import TextCleaning
-from task1_word_embedding import WordEmbedding
-from task2_aspects import GenerateAspects
-from task3_document_clustering import DocumentClustering
+"""
+This module analyses the NIPS-2015 dataset. Analysis will include
+1. creation of a Fasttext based word embedding to generate word representation
+2. Identify major keywords for each document
+3. Cluster the documents based on document similarity
+"""
 
-def main():
+import pandas as pd
+import sys
+from pre_processing import TextCleaning
+from task1 import WordEmbedding
+from task2 import GenerateAspects
+from task3 import DocumentClustering
+import sys
+
+
+def main(argv):
     """
-    Step1:
-    Step2....
+    This method will implement the NIPS-2015 analysis. The analysis has following major steps -
+
+    Step 1: This step involves reading the dataset provided by user from a given location
+
+    Step 2: This will clean PaperText data and Abstract text data. New columns added to dataframe with cleaned data
+    and a backup is created for cleaned data. User can enable/disable following steps - html_stripping, text_stemming
+
+    Step 3: The next step is to generate the word-embedding using Fasttext. Once the data is cleaned it is used to
+    generate a word-embedding model which can be used to get similar word-representations to a given word.
+    User specify what dimension to be used in the fast-text model
+
+    Step 4: Now identify keywords for each individual document
+
+    Step 5: Using LDA cluster the documents into N-cluster. User can specify the number of clusters to be generated for documents
+
+    :param argv: user_defined parameters - 0: file location, 1: is_html, 2:text_stemming, 3:ft_dim, 4: N-cluster
     :return:
     """
 
-    # Step1: Read input dataset
+    # Step 1: Read input dataset
     # ---------------------------------
-    df = pd.read_csv("./data/Papers.csv")
+    data1 = pd.read_csv(argv[0])
 
     # taking a sample of 10 documents
-    sub_df = df[:10]
-    sub_df.to_csv("./data/Papers_sub.csv")
-    """
-    # Step2: Pre-processing the data
+    data = data1[:10]
+
+    # Step 2: Pre-processing the data
     # ----------------------------------
     pre_process_columns = TextCleaning()
+    data['AbstractClean'] = data['Abstract'].apply(pre_process_columns.normalize_corpus,
+                                                       args=(argv[0], True, True, True, True, True, True, argv[2]))
+    data['PaperTextClean'] = data['PaperText'].apply(pre_process_columns.normalize_corpus,
+                                                         args=(argv[0], True, True, True, True, True, True, argv[2]))
+    # Backup cleaned data
+    data.to_csv("./input/cleaned_data.csv")
 
-    # Add cleaned text column
-    sub_df['AbstractClean'] = sub_df['Abstract'].apply(pre_process_columns.normalize_corpus,
-                                                       args=(False, True, True, True, True, True, True, True))
+    # Step 3: Word embeddings - Fast-text
+    # -------------------------------------
+    word_embedding = WordEmbedding(feature_size=argv[3])
+    word_embedding.build_model(data)
 
-    sub_df['PaperTextClean'] = sub_df['PaperText'].apply(pre_process_columns.normalize_corpus,
-                                                         args=(False, True, True, True, True, True, True, True))
+    # find word similarity for list of words
+    words_similarity = ["classification","experiments"]
+    print(word_embedding.get_similar_words(words_similarity))
 
-    sub_df.to_csv("./data/cleaned_data.csv")
-
-    # Step 3: Generate word vectors - using Fast-text
-    # --------------------------------------------------
-    obj = WordEmbedding()
-
-    # build model for dataset
-    obj.build_model(sub_df)
-
-    # get word similar
-    words_similarity = ["classification"]
-    print(obj.get_similar_words(words_similarity))
-
-    # Step 3: Get Aspects
-    get_keywords = GenerateAspects(sub_df)
+    # Step 4: Generate keywords for each doc
+    # ---------------------------------------
+    get_keywords = GenerateAspects(data)
     get_keywords.gen_aspect()
 
-    #df = pd.read_csv("./data/cleaned_data.csv")
-
-    # Step 4: Get The documents cluster
-    gen_cluster=DocumentClustering(sub_df)
+    # Step 5: Generate document cluster
+    # ---------------------------------------
+    gen_cluster = DocumentClustering(data)
     gen_cluster.get_document_cluster(topics_cnt=5)
-    """
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])

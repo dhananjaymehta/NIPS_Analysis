@@ -14,7 +14,7 @@ wpt = nltk.WordPunctTokenizer()
 
 
 class WordEmbedding:
-    def __init__(self,feature_size=100, window_context=50, min_word_count=5, sample=1e-3,mode=1):
+    def __init__(self, feature_size=100, window_context=50, min_word_count=5, sample=1e-3,mode=1):
         """
 
         :param feature_size:
@@ -41,20 +41,19 @@ class WordEmbedding:
         # Taking a backup store to text file
         tokenized_corpus_backup = [[str(id), tokenized_doc] for id, tokenized_doc in zip(list(data.Id), tokenized_corpus)]
 
-        # take a backup of tokeninzed_text -
         with open('./output/tokenized_text.txt', 'w') as f:
             for item in tokenized_corpus_backup:
                 rec = '##'.join(str(_item) for _item in item)
-                f.write("%s\n" %rec)
+                f.write("%s\n" % rec)
 
-        # building a fasttext vectorizer model
+        # building a fasttext word-embeddion model
         self.model = FastText(tokenized_corpus, size=self.feature_size, window=self.window_context,
                             min_count=self.min_word_count,sample=self.sample, sg=self.mode, iter=50)
 
         # save model after its been created
-        self.model.save('./model/nips_fasttext')
+        self.model.save('./model/task1/nips_fasttext')
 
-        # this model can be recalled in later stages and we can continue to train the model
+        # Load model of needed for retraining
         # model = FastText.load(fname)
 
     def get_similar_words(self,search_words):
@@ -63,7 +62,6 @@ class WordEmbedding:
         :param search_words: (list), list of words that user want to search
         :return: list of similar words
         """
-        #search_words=["classification"]
         similar_words={}
         if not search_words:
             return "Please enter words to be searched"
@@ -77,7 +75,7 @@ class WordEmbedding:
 
     def get_word_viz(self,similar_words):
         """
-        This function will generate the visualization for similarity of words
+        This function will generate the visualization for similarity of words from previous function
         :param similar_words: (dict), map of related words generated from get_similar_words
         :return: plot of words similarity
         """
@@ -85,18 +83,17 @@ class WordEmbedding:
             return
 
         words = sum([[k] + v for k, v in similar_words.items()], [])
-        wvs = self.model.wv[words]
+        wvector = self.model.wv[words]
 
         pca = PCA(n_components=2)
         np.set_printoptions(suppress=True)
-        P = pca.fit_transform(wvs)
+        plot = pca.fit_transform(wvector)
         labels = words
 
         plt.figure(figsize=(18,12))
-        plt.scatter(P[:, 0], P[:, 1], c='lightgreen', edgecolors='g')
-        for label, x, y in zip(labels, P[:, 0], P[:, 1]):
+        plt.scatter(plot[:, 0], plot[:, 1], c='lightgreen', edgecolors='g')
+        for label, x, y in zip(labels, plot[:, 0], plot[:, 1]):
             plt.annotate(label, xy=(x+0.01, y+0.01), xytext=(0, 0), textcoords='offset points')
 
-        #plt.show()
-        name="./visualizations/viz_fasttext"
+        name="./visualizations/FastText/viz_fasttext"
         plt.savefig( name+".png")
