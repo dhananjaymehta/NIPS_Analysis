@@ -62,7 +62,7 @@ class DocumentClustering:
 
         threshold = sum(scores) / len(scores)
 
-        self.lda_model.save('lda_model')
+        #self.lda_model.save('lda_model')
 
         # Generate document cluster: {cluster_id: [list of documents]}
         for _doc in range(len(document_corpus)):
@@ -76,7 +76,7 @@ class DocumentClustering:
 
         # cluster_word_map: cluster_id: [(word, significance of word)]}
         _cluster_word_map = {key: self.lda_model.show_topic(key, topn=10)
-                                 for key in range(self.lda_model.num_topics)}
+                             for key in range(self.lda_model.num_topics)}
 
         self.cluster_word_map = {cluster_id: [word[0] for word in words] for cluster_id, words in _cluster_word_map.items()}
 
@@ -88,8 +88,8 @@ class DocumentClustering:
         """
         self._gen_document_cluster(topics_cnt)
 
-        with open('./output/document_cluster.json', 'w') as f:
+        with open('./output/task3/document_cluster.json', 'w') as f:
             json.dump(self.documents_cluster, f)
 
-        with open('./output/cluster_map.json', 'w') as f:
+        with open('./output/task3/cluster_map.json', 'w') as f:
             json.dump(self.cluster_word_map, f)

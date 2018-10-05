@@ -1,5 +1,6 @@
 """
-https://radimrehurek.com/gensim/models/fasttext.html
+This module generates word-embedding using Fst-Text.
+This module will handle the case of word-representation
 """
 from gensim.test.utils import get_tmpfile
 from sklearn.decomposition import PCA
@@ -14,14 +15,12 @@ wpt = nltk.WordPunctTokenizer()
 
 
 class WordEmbedding:
+    """
+    implement the word embedding
+    """
     def __init__(self, feature_size=100, window_context=50, min_word_count=5, sample=1e-3,mode=1):
         """
-
-        :param feature_size:
-        :param window_context:
-        :param min_word_count:
-        :param sample:
-        :param mode:
+        i
         """
         self.model = None                       # Model to be generated
         self.feature_size = feature_size        # Word vector dimensionality
@@ -30,13 +29,14 @@ class WordEmbedding:
         self.sample = sample                    # Downsample setting for frequent words
         self.mode = mode                        # sg decides whether to use the skip-gram model (1) or CBOW (0)
 
-    def build_model(self,data):
+    def build_model(self, data):
         """
-        :param data:
+        This will build a model using Fast-text
+        :param data: dataframe as an input
         :return:
         """
-        # tokenize the text - abstract
-        tokenized_corpus = [wpt.tokenize(document) for document in list(data.AbstractClean)]
+        # tokenize the text
+        tokenized_corpus = [wpt.tokenize(document) for document in list(data.PaperTextClean)]
 
         # Taking a backup store to text file
         tokenized_corpus_backup = [[str(id), tokenized_doc] for id, tokenized_doc in zip(list(data.Id), tokenized_corpus)]
@@ -46,15 +46,15 @@ class WordEmbedding:
                 rec = '##'.join(str(_item) for _item in item)
                 f.write("%s\n" % rec)
 
-        # building a fasttext word-embeddion model
+        # building a fasttext word-embedding model
         self.model = FastText(tokenized_corpus, size=self.feature_size, window=self.window_context,
                             min_count=self.min_word_count,sample=self.sample, sg=self.mode, iter=50)
 
         # save model after its been created
         self.model.save('./model/task1/nips_fasttext')
 
-        # Load model of needed for retraining
-        # model = FastText.load(fname)
+        # Load model if needed for retraining
+        # model = FastText.load(name)
 
     def get_similar_words(self,search_words):
         """
@@ -62,7 +62,7 @@ class WordEmbedding:
         :param search_words: (list), list of words that user want to search
         :return: list of similar words
         """
-        similar_words={}
+        similar_words = {}
         if not search_words:
             return "Please enter words to be searched"
         else:

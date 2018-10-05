@@ -6,13 +6,12 @@ This module analyses the NIPS-2015 dataset. Analysis will include
 """
 
 import pandas as pd
-import sys
 from pre_processing import TextCleaning
 from task1 import WordEmbedding
 from task2 import GenerateAspects
 from task3 import DocumentClustering
 import sys
-
+#import logging
 
 def main(argv):
     """
@@ -37,10 +36,10 @@ def main(argv):
 
     # Step 1: Read input dataset
     # ---------------------------------
-    data1 = pd.read_csv(argv[0])
+    data = pd.read_csv(argv[0])
 
-    # taking a sample of 10 documents
-    data = data1[:10]
+    # taking subset of data with relevant columns - Id, Title, Abstract, PaperText
+    data = data[['Id', 'Title', 'Abstract', 'PaperText']]
 
     # Step 2: Pre-processing the data
     # ----------------------------------
@@ -54,7 +53,7 @@ def main(argv):
 
     # Step 3: Word embeddings - Fast-text
     # -------------------------------------
-    word_embedding = WordEmbedding(feature_size=argv[3])
+    word_embedding = WordEmbedding(feature_size=int(argv[3]))
     word_embedding.build_model(data)
 
     # find word similarity for list of words
