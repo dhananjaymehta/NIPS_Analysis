@@ -43,7 +43,7 @@ Following sections describe this pipeline in more details -
 Input is in form of a csv file. The file has following colums - 
 
 `['Id', 'Title', 'EventType', 'PdfName', 'Abstract',
-       'PaperText', 'AbstractClean', 'PaperTextClean']`
+       'PaperText']`
        
 Of these only four columns are valuable to current scope of work -
  
